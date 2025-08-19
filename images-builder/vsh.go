@@ -23,7 +23,7 @@ Type ":theme {{ .Theme }}"
 Sleep 10ms
 Enter
 Sleep 100ms
-Screenshot {{ .Out }}.png
+Screenshot {{ .Out }}
 Sleep 500ms
 Type ":q"
 Sleep 100ms
@@ -45,37 +45,28 @@ func renderVhsTemplateString(theme, snippetFilePath, screenshotFilePath string) 
 }
 
 func makeScreenshot(theme, languageKey, snippetFilePath, outputFilePath string) error {
-	var a artefactReport
-	a.Theme = theme
-	a.Language = language
-	a.SourceFile = sourceFilePath
-	a.OutFile = outputFilePath + ".png"
-	key := fmt.Sprintf("%s-%s-%s", theme, language, filepath.Base(sourceFilePath))
-	f, err := os.CreateTemp("", key+".tape")
+
+	f, err := os.CreateTemp("", filepath.Base(outputFilePath)+".tape")
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to create .tape file for %s %s %s: %w", theme, languageKey, snippetFilePath, err)
 	}
 	defer f.Close()
 	tpl.Execute(f, map[string]any{
-		"File":  sourceFilePath,
+		"File":  snippetFilePath,
 		"Theme": theme,
 		"Out":   outputFilePath,
 	})
 	err = f.Sync()
 	if err != nil {
-		a.Error = err
-		return a
+		return fmt.Errorf("failed to flush file to disk: %w", err)
 	}
 	cmd := "vhs " + f.Name() + ""
 	command := exec.Command("sh", "-c", cmd)
 	output, err := command.CombinedOutput()
 	_ = output // Uncomment to see the output
 
-	fmt.Printf("%s", output)
 	if err != nil {
-		a.Error = fmt.Errorf("error running command %s: %w", cmd, err)
-		return a
+		return fmt.Errorf("failed to run vhs: %w", err)
 	}
-	a.Success = true
-	return a
+	return nil
 }
