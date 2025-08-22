@@ -45,7 +45,6 @@ func renderVhsTemplateString(theme, snippetFilePath, screenshotFilePath string) 
 }
 
 func makeScreenshot(theme, languageKey, snippetFilePath, outputFilePath string) error {
-
 	f, err := os.CreateTemp("", filepath.Base(outputFilePath)+".tape")
 	if err != nil {
 		return fmt.Errorf("failed to create .tape file for %s %s %s: %w", theme, languageKey, snippetFilePath, err)
