@@ -28,6 +28,7 @@
           delve
           vhs
           python3
+          helix
         ];
       };
     });
