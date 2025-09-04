@@ -10,6 +10,14 @@ type SnippetResources struct {
 	langages map[string][]string
 }
 
+func (s SnippetResources) snippetNumber() int {
+	acc := 0
+	for _, lang := range s.langages {
+		acc += len(lang)
+	}
+	return acc
+}
+
 func GetSnippetResource(fs afero.Fs, SnippetResourcesFolderPath string) (SnippetResources, error) {
 	resp := SnippetResources{
 		langages: make(map[string][]string, 0),

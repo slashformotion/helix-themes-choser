@@ -1,0 +1,34 @@
+name: Build and Run Application
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    name: Build and Run Go Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v24
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-unstable
+
+      - name: Build and run application in Nix shell
+        run: |
+          nix develop -c bash -c "cd builder && go build -o main . && ./main -output-folder-path ../out"
+
+      - name: Upload output as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-screenshots-${{ github.sha }}
+          path: out/
+          retention-days: 7
+          if-no-files-found: warn

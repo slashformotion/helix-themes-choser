@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -24,7 +25,7 @@ Sleep 10ms
 Enter
 Sleep 100ms
 Screenshot {{ .Out }}
-Sleep 500ms
+Sleep 50ms
 Type ":q"
 Sleep 100ms
 `
@@ -62,9 +63,8 @@ func makeScreenshot(theme, languageKey, snippetFilePath, outputFilePath string) 
 	cmd := "vhs " + f.Name() + ""
 	command := exec.Command("sh", "-c", cmd)
 	output, err := command.CombinedOutput()
-	_ = output // Uncomment to see the output
-
 	if err != nil {
+		slog.Debug("print combined output", slog.String("output", string(output)))
 		return fmt.Errorf("failed to run vhs: %w", err)
 	}
 	return nil
