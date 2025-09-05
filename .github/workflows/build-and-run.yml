@@ -23,7 +23,7 @@ jobs:
         env:
           COLORTERM: truecolor
         run: |
-          nix develop -c bash -c "go run image-builder/main.go && cp -r out/* public/ && go run website-builder/main.go"
+          nix develop -c bash -c "make all"
 
       - name: Upload screenshot
         uses: actions/upload-artifact@v4
@@ -34,7 +34,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload website
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v4
         with:
           name: website-${{ github.sha }}
           path: public/

@@ -54,7 +54,7 @@ func main() {
 				if err != nil {
 					slog.Error("make screenshot failed", slog.String("error", err.Error()), slog.String("snippetFilePath", snippetFilePath), slog.String("outputFilePath", outputFilePath))
 				} else {
-					snippetReport := internal.Snippet{Name: snippet, URL: fmt.Sprintf("/%s/%s/%s.png", theme, lang, snippet)}
+					snippetReport := internal.Snippet{Name: snippet, URL: fmt.Sprintf("./%s/%s/%s.png", theme, lang, snippet)}
 					langReport.Snippets = append(langReport.Snippets, snippetReport)
 					slog.Info("make screenshot successful", slog.String("snippetFilePath", snippetFilePath), slog.String("outputFilePath", outputFilePath))
 				}
