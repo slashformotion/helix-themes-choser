@@ -1,0 +1,58 @@
+name: Build and Run Application
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build images and website
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build and run application in Nix shell
+        env:
+          COLORTERM: truecolor
+        run: |
+          nix develop -c bash -c "go run image-builder/main.go && cp -r out/* public/ && go run website-builder/main.go"
+
+      - name: Upload screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-screenshots-${{ github.sha }}
+          path: out/
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload website
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-${{ github.sha }}
+          path: public/
+          retention-days: 7
+          if-no-files-found: warn
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publishing production artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: website-${{ github.sha }}
