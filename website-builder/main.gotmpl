@@ -1,36 +1,64 @@
 <!DOCTYPE html>
 <html class="holiday-css-light">
+
 <head>
   <meta charset="UTF-8">
   <title>Helix Theme Preview Gallery</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
 </head>
+
 <body>
   <header>
     <h1>Helix Theme Preview Gallery</h1>
+    <p>Select your language</p>
+    <select id="lang-select">
+      <option default value="lang-all">all</option>
+      {{ $first := index .Themes 0 }}
+      {{range $first.Languages}}
+      <option value="lang-{{ .Lang }}">{{ .Lang }}</option>
+      {{end}}
+    </select>
   </header>
   <main>
     {{range .Themes}}
-      <section>
-        <h2> <code>{{ .Name }}</code></h2>
-        {{range .Languages}}
-          <h3>{{ .Lang }}</h3>
-          <div>
-            {{range .Snippets}}
-              <figure>
-                <img src="{{ .URL }}">
-                <p>{{ .Name }}</p>
-              </figure>
-            {{end}}
-          </div>
-        {{end}}
-      </section>
+    <section>
+      <h2> <code>{{ .Name }}</code></h2>
+      {{range .Languages}}
+      <div data-lang="lang-{{ .Lang }}">
+        <h3>{{ .Lang }}</h3>
+        <div>
+          {{range .Snippets}}
+          <figure>
+            <img src="{{ .URL }}" loading="lazy" alt="{{ .Name }} " />
+            <figcaption>{{ .Name }}</figcaption>
+          </figure>
+          {{end}}
+        </div>
+      </div>
+      {{end}}
+    </section>
     {{else}}
-      <p>No themes available. Come back soon!</p>
+    <p>No themes available. Come back soon!</p>
     {{end}}
   </main>
   <footer>
     <p>Generated with holiday.css — minimal, classless, and beautiful.</p>
   </footer>
+
+  <script>
+    document.getElementById('lang-select').addEventListener('change', function () {
+      const selectedLang = this.value;
+      document.querySelectorAll('div[data-lang]').forEach(div => {
+        if (selectedLang === 'lang-all' || div.getAttribute('data-lang') === selectedLang) {
+          div.style.display = 'block';
+        } else {
+          div.style.display = 'none';
+        }
+      });
+    });
+
+  </script>
+
 </body>
+
 </html>
