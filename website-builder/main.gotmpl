@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html class="holiday-css-light">
+<head>
+  <meta charset="UTF-8">
+  <title>Helix Theme Preview Gallery</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
+</head>
+<body>
+  <header>
+    <h1>Helix Theme Preview Gallery</h1>
+  </header>
+  <main>
+    {{range .Themes}}
+      <section>
+        <h2> <code>{{ .Name }}</code></h2>
+        {{range .Languages}}
+          <h3>{{ .Lang }}</h3>
+          <div>
+            {{range .Snippets}}
+              <figure>
+                <img src="{{ .URL }}">
+                <p>{{ .Name }}</p>
+              </figure>
+            {{end}}
+          </div>
+        {{end}}
+      </section>
+    {{else}}
+      <p>No themes available. Come back soon!</p>
+    {{end}}
+  </main>
+  <footer>
+    <p>Generated with holiday.css — minimal, classless, and beautiful.</p>
+  </footer>
+</body>
+</html>

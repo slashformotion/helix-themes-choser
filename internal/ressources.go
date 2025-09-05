@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"path/filepath"
@@ -7,12 +7,12 @@ import (
 )
 
 type SnippetResources struct {
-	langages map[string][]string
+	Langages map[string][]string
 }
 
-func (s SnippetResources) snippetNumber() int {
+func (s SnippetResources) SnippetNumber() int {
 	acc := 0
-	for _, lang := range s.langages {
+	for _, lang := range s.Langages {
 		acc += len(lang)
 	}
 	return acc
@@ -20,7 +20,7 @@ func (s SnippetResources) snippetNumber() int {
 
 func GetSnippetResource(fs afero.Fs, SnippetResourcesFolderPath string) (SnippetResources, error) {
 	resp := SnippetResources{
-		langages: make(map[string][]string, 0),
+		Langages: make(map[string][]string, 0),
 	}
 	folderExist, err := afero.DirExists(fs, SnippetResourcesFolderPath)
 	if err != nil {
@@ -45,8 +45,8 @@ func GetSnippetResource(fs afero.Fs, SnippetResourcesFolderPath string) (Snippet
 		if err != nil {
 			return SnippetResources{}, err
 		}
-		if _, ok := resp.langages[languageString]; !ok {
-			resp.langages[languageString] = make([]string, 0)
+		if _, ok := resp.Langages[languageString]; !ok {
+			resp.Langages[languageString] = make([]string, 0)
 		}
 
 		for _, s := range snippetFolderFiles {
@@ -54,8 +54,8 @@ func GetSnippetResource(fs afero.Fs, SnippetResourcesFolderPath string) (Snippet
 				continue
 			}
 			snippetName := s.Name()
-			resp.langages[languageString] = append(
-				resp.langages[languageString],
+			resp.Langages[languageString] = append(
+				resp.Langages[languageString],
 				snippetName,
 			)
 

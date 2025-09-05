@@ -1,4 +1,4 @@
-module images-builder
+module github.com/slashformotion/helix-theme-choser
 
 go 1.24.5
 

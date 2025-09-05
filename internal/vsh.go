@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"bytes"
@@ -32,7 +32,7 @@ Sleep 100ms
 
 var tpl = template.Must(template.New("main").Parse(tplString))
 
-func renderVhsTemplateString(theme, snippetFilePath, screenshotFilePath string) ([]byte, error) {
+func RenderVhsTemplateString(theme, snippetFilePath, screenshotFilePath string) ([]byte, error) {
 	var b bytes.Buffer
 	err := tpl.Execute(&b, map[string]any{
 		"File":  snippetFilePath,
@@ -45,7 +45,7 @@ func renderVhsTemplateString(theme, snippetFilePath, screenshotFilePath string) 
 	return b.Bytes(), nil
 }
 
-func makeScreenshot(theme, languageKey, snippetFilePath, outputFilePath string) error {
+func MakeScreenshot(theme, languageKey, snippetFilePath, outputFilePath string) error {
 	f, err := os.CreateTemp("", filepath.Base(outputFilePath)+".tape")
 	if err != nil {
 		return fmt.Errorf("failed to create .tape file for %s %s %s: %w", theme, languageKey, snippetFilePath, err)
